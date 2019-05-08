@@ -56,24 +56,26 @@ public class AsociacionCervecera {
 
 	}
 
-	public boolean createTableEmpleado() throws Exception {
+		public boolean createTableEmpleado() throws SQLException {
 		boolean creado = false;
 		try {
 			st = conn.createStatement();
 			String sql = "CREATE TABLE Empleado"
 					+ "(id_empleado INTEGER not NULL," + "nombre VARCHAR(255)"
 					+ "direccion VARCHAR(255)" + "telefono VARCHAR(255)"
-					+ "salario DOUBLE" + "PRIMARY KEY (id_empleado)";
+					+ "salario DOUBLE" + "id_bar INTEGER not NULL"
+					+ "PRIMARY KEY (id_empleado)" + "FOREIGN KEY(id_bar)";
 			st.executeUpdate(sql);
 			System.out.println("Creando tabla Empleado");
 			creado = true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.out.println("No se ha podido crear la tabla");
 		}
 		return creado;
 	}
 
-	public boolean createTableGusta() throws Exception {
+	public boolean createTableGusta() throws SQLException {
 		boolean creado = false;
 		try {
 			st = conn.createStatement();
@@ -88,11 +90,12 @@ public class AsociacionCervecera {
 			creado = true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.out.println("No se ha podido crear la tabla");
 		}
 		return creado;
 	}
 
-	public boolean loadEmpleados() throws Exception {
+	public boolean loadEmpleados() throws SQLException {
 		boolean correcto = false;
 		int id[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 		String nombre[] = { "Carmen Matin", "Ana Ruiz", "Mario Moreno",
@@ -103,17 +106,17 @@ public class AsociacionCervecera {
 				"C/Jupiter,7", "C/Saturno,8" };
 		int telefono[] = { 699999999, 699999988, 699999977, 699999966,
 				699999955, 699999944, 699999933, 699999922, 699999911 };
-		double salario[] = { 1600.00, 1300.00, 1200.00, 1450.00, 1350.00,
-				1500.00, 1350.00, 1350.00, 1650.00 };
+		float salario[] = { 1600, 1300, 1200, 1450, 1350, 1500, 1350, 1350,
+				1650 };
 		int id_bar[] = { 1, 2, 2, 3, 3, 3, 4, 4, 5 };
-		String query = "INSERT INTO Empleado(id_empleado,nombre,direccion,telefono,salario,id_bar) VALUES (INTEGER,VARCHAR(255), VARCHAR(255), INTEGER, DOUBLE, INTEGER)";
+		String query = "INSERT INTO Empleado(id_empleado,nombre,direccion,telefono,salario,id_bar) VALUES (INTEGER,VARCHAR(255), VARCHAR(255), INTEGER, FLOAT, INTEGER)";
 		PreparedStatement st = conn.prepareStatement(query);
 		for (int i = 0; i < id.length; i++) {
 			st.setInt(1, id[i]);
 			st.setString(2, nombre[i]);
 			st.setString(3, direccion[i]);
 			st.setInt(3, telefono[i]);
-			st.setDouble(5, salario[i]);
+			st.setFloat(5, salario[i]);
 			st.setInt(6, id_bar[i]);
 			int resultado = st.executeUpdate();
 			if (resultado == 1) {
@@ -127,8 +130,6 @@ public class AsociacionCervecera {
 		}
 		return correcto;
 	}
-
-
 	public boolean loadGustos(String fileName) {
 		return false;
 	}
