@@ -56,7 +56,7 @@ public class AsociacionCervecera {
 
 	}
 
-		public boolean createTableEmpleado() throws SQLException {
+			public boolean createTableEmpleado() throws SQLException {
 		boolean creado = false;
 		try {
 			st = conn.createStatement();
@@ -82,8 +82,10 @@ public class AsociacionCervecera {
 			String sql = "CREATE TABLE Gusta" + "(id_bar INTEGER not NULL,"
 					+ "id_socio INTEGER not NULL"
 					+ "id_cerveza INTEGER not NULL"
-					+ "PRIMARY KEY (id_bar, id_socio, id_cerveza)"
+					+ "id_bar INTEGER not NULL"
+					+ "PRIMARY KEY (id_socio, id_cerveza, id_bar)"
 					+ "FOREIGN KEY(id_socio) references Socio"
+					+ "FOREIGN KEY(id_cerveza) references cerveza"
 					+ "FOREIGN KEY(id_bar) references Bar";
 			st.executeUpdate(sql);
 			System.out.println("Creando tabla Gusta");
@@ -109,13 +111,13 @@ public class AsociacionCervecera {
 		float salario[] = { 1600, 1300, 1200, 1450, 1350, 1500, 1350, 1350,
 				1650 };
 		int id_bar[] = { 1, 2, 2, 3, 3, 3, 4, 4, 5 };
-		String query = "INSERT INTO Empleado(id_empleado,nombre,direccion,telefono,salario,id_bar) VALUES (INTEGER,VARCHAR(255), VARCHAR(255), INTEGER, FLOAT, INTEGER)";
+		String query = "INSERT INTO Empleado(id_empleado,nombre,direccion,telefono,salario,id_bar) VALUES (?,?,?,?,?,?)";
 		PreparedStatement st = conn.prepareStatement(query);
 		for (int i = 0; i < id.length; i++) {
 			st.setInt(1, id[i]);
 			st.setString(2, nombre[i]);
 			st.setString(3, direccion[i]);
-			st.setInt(3, telefono[i]);
+			st.setInt(4, telefono[i]);
 			st.setFloat(5, salario[i]);
 			st.setInt(6, id_bar[i]);
 			int resultado = st.executeUpdate();
@@ -130,8 +132,28 @@ public class AsociacionCervecera {
 		}
 		return correcto;
 	}
-	public boolean loadGustos(String fileName) {
-		return false;
+
+	public boolean loadGustos(String fileName) throws SQLException {
+		boolean carga = false;
+		try{
+			ArrayList<Gusto> gusto = readData(fileName);
+			String query = "INSERT INTO Gusta(id_socio, id_cerveza, id_bar) VALUES(?,?,?)";
+			PreparedStatement st = conn.prepareStatement(query);
+			for(int i = 0; i<gusto.size(); i++){
+				st.setInt(1, gusto.get(i).idSocio);
+				st.setInt(2, gusto.get(i).idCerveza);
+				st.setInt(3, gusto.get(i).idBar);
+			}
+			st.executeQuery();
+			st.executeUpdate();
+			carga =true;
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+			System.out.println("Ha habido un problema con la inserccion");
+		}
+			
+		return carga;
 	}
 
 	public ArrayList<Bar> getBarData() {
