@@ -18,35 +18,35 @@ public class AsociacionCervecera {
 	
 	public boolean DBconnect() throws Exception {
 		boolean conectado = false;
-		try{
+		try {
 			String drv = "com.mysql.jdbc.Driver";
-			String	 serverAddress = "localhost:3306";
+			String serverAddress = "localhost:3306";
 			String db = "ac";
 			String user = "bd";
 			String pass = "bdupm";
 			String url = "jdbc:mysql://" + serverAddress + "/" + db;
 			Class.forName(drv);
-			System.out.println("Procediendo a conexión");
+			System.out.println("Procediendo a conexiÃ³n");
 			Connection conn = DriverManager.getConnection(url, user, pass);
 			conn.setAutoCommit(true);
 			conectado = true;
-		}
-		catch(Exception excepcion){
+		} catch (Exception excepcion) {
+			System.out.println("Ha habido un problema con la conexciÃ³n");
 			excepcion.printStackTrace();
 		}
 		return conectado;
-		
+
 	}
 
-	public boolean DBclose() throws Exception{
+	public boolean DBclose() throws Exception {
 		boolean conectado = false;
-		System.out.println("Saliendo.. ¡hasta otra!");
+		System.out.println("Saliendo.. Â¡hasta otra!");
 		if (conn != null) {
 			try {
 				conn.close();
-				conectado=true;
+				conectado = true;
 			} catch (SQLException e) {
-				System.out.println("Ha habido un problema con la desconexión:");
+				System.out.println("Ha habido un problema con la desconexiÃ³n:");
 				e.printStackTrace();
 			}
 			System.exit(0);
@@ -56,37 +56,78 @@ public class AsociacionCervecera {
 
 	}
 
-	public boolean createTableEmpleado() throws Exception{
+	public boolean createTableEmpleado() throws Exception {
 		boolean creado = false;
-		try{
+		try {
 			st = conn.createStatement();
-			String sql = "CREATE TABLE Empleado" + "(id_empleado INTEGER not NULL,"+"nombre VARCHAR(255)" + "direccion VARCHAR(255)"  + "telefono VARCHAR(255)" + "salario DOUBLE" + "PRIMARY KEY (id_empleado)";
+			String sql = "CREATE TABLE Empleado"
+					+ "(id_empleado INTEGER not NULL," + "nombre VARCHAR(255)"
+					+ "direccion VARCHAR(255)" + "telefono VARCHAR(255)"
+					+ "salario DOUBLE" + "PRIMARY KEY (id_empleado)";
 			st.executeUpdate(sql);
+			System.out.println("Creando tabla Empleado");
 			creado = true;
-		}
-		catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return creado;
 	}
 
-	public boolean createTableGusta() throws Exception{
+	public boolean createTableGusta() throws Exception {
 		boolean creado = false;
-		try{
+		try {
 			st = conn.createStatement();
-			String sql = "CREATE TABLE Gusta" + "(id_empleado INTEGER not NULL,"+"nombre VARCHAR(255)" + "direccion VARCHAR(255)"  + "telefono VARCHAR(255)" + "salario DOUBLE" + "PRIMARY KEY (id_empleado)";
+			String sql = "CREATE TABLE Gusta" + "(id_bar INTEGER not NULL,"
+					+ "id_socio INTEGER not NULL"
+					+ "id_cerveza INTEGER not NULL"
+					+ "PRIMARY KEY (id_bar, id_socio, id_cerveza)"
+					+ "FOREIGN KEY(id_socio) references Socio"
+					+ "FOREIGN KEY(id_bar) references Bar";
 			st.executeUpdate(sql);
+			System.out.println("Creando tabla Gusta");
 			creado = true;
-		}
-		catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return creado;
 	}
 
-	public boolean loadEmpleados() {
-		return false;
+	public boolean loadEmpleados() throws Exception {
+		boolean correcto = false;
+		int id[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+		String nombre[] = { "Carmen Matin", "Ana Ruiz", "Mario Moreno",
+				"Laura Romero", "Luis Ruiz", "Benito Gil", "Dolores Molina",
+				"Julio Garrido", "Pilar Romero" };
+		String direccion[] = { "C/Sol,1", "C/Luna,2", "C/Estrella,3",
+				"C/Mercurio,4", "C/Venus,5", "C/Marte,6", "C/Jupiter,7",
+				"C/Jupiter,7", "C/Saturno,8" };
+		int telefono[] = { 699999999, 699999988, 699999977, 699999966,
+				699999955, 699999944, 699999933, 699999922, 699999911 };
+		double salario[] = { 1600.00, 1300.00, 1200.00, 1450.00, 1350.00,
+				1500.00, 1350.00, 1350.00, 1650.00 };
+		int id_bar[] = { 1, 2, 2, 3, 3, 3, 4, 4, 5 };
+		String query = "INSERT INTO Empleado(id_empleado,nombre,direccion,telefono,salario,id_bar) VALUES (INTEGER,VARCHAR(255), VARCHAR(255), INTEGER, DOUBLE, INTEGER)";
+		PreparedStatement st = conn.prepareStatement(query);
+		for (int i = 0; i < id.length; i++) {
+			st.setInt(1, id[i]);
+			st.setString(2, nombre[i]);
+			st.setString(3, direccion[i]);
+			st.setInt(3, telefono[i]);
+			st.setDouble(5, salario[i]);
+			st.setInt(6, id_bar[i]);
+			int resultado = st.executeUpdate();
+			if (resultado == 1) {
+				System.out.println("Se ha insertado correctamente");
+				correcto = true;
+			}
+
+			else
+				System.out.println("Ha habido un problema con la inserccion");
+
+		}
+		return correcto;
 	}
+
 
 	public boolean loadGustos(String fileName) {
 		return false;
@@ -117,9 +158,9 @@ public class AsociacionCervecera {
 	 * glance to the code, but it is STRICTLY FORBIDDEN to modify any part of
 	 * the code bellow these lines.
 	 * 
-	 * Aquí comienza la parte "privada" del código. Es conviniente echar un
-	 * vistazo al código, pero está ESTRÍCTICAMENTE PROHIBIDO modificar
-	 * cualquier parte del código bajo estas líneas.
+	 * AquÃ­ comienza la parte "privada" del cÃ³digo. Es conviniente echar un
+	 * vistazo al cÃ³digo, pero estÃ¡ ESTRÃCTICAMENTE PROHIBIDO modificar
+	 * cualquier parte del cÃ³digo bajo estas lÃ­neas.
 	 */
 
 	private void mainMenu() {
@@ -128,18 +169,18 @@ public class AsociacionCervecera {
 
 		// Main menu loop
 		do {
-			System.out.println("Escoja una opción: ");
+			System.out.println("Escoja una opciÃ³n: ");
 			System.out
 					.println("  1) Crear las tablas \"empleado\" y \"gusta\".");
 			System.out
 					.println("  2) Cargar datos de los empleados y los gustos.");
 			System.out.println("  3) Listar los bares almacenados.");
 			System.out.println("  4) Listar las cervezas de un fabricante.");
-			System.out.println("  5) Listar las cervezas más populares.");
+			System.out.println("  5) Listar las cervezas mÃ¡s populares.");
 			System.out
-					.println("  6) Añadir columna de foto a la tabla \"empleado\".");
-			System.out.println("  7) Añadir un nuevo empleado con foto.");
-			System.out.println("  0) Salir de la aplicación.");
+					.println("  6) AÃ±adir columna de foto a la tabla \"empleado\".");
+			System.out.println("  7) AÃ±adir un nuevo empleado con foto.");
+			System.out.println("  0) Salir de la aplicaciÃ³n.");
 
 			// Read user's option and check that it is a valid option
 			menuOption = 'a';
@@ -149,7 +190,7 @@ public class AsociacionCervecera {
 					menuOption = line.charAt(0);
 				}
 				if (menuOption < '0' || menuOption > '7') {
-					System.out.println("Opción incorrecta.");
+					System.out.println("OpciÃ³n incorrecta.");
 				}
 			} while (menuOption < '0' || menuOption > '7');
 
@@ -187,19 +228,19 @@ public class AsociacionCervecera {
 				break;
 			case '6':
 				System.out
-						.println("Añadiendo columa \"foto\" en la tabla \"empleado\"...");
+						.println("AÃ±adiendo columa \"foto\" en la tabla \"empleado\"...");
 				addFotoColumn();
 				break;
 			case '7':
-				System.out.println("Añadiendo un nuevo empleado con foto...");
+				System.out.println("AÃ±adiendo un nuevo empleado con foto...");
 				addEmpleadoFoto();
 				break;
 			}
 
 			if (menuOption != '0')
-				System.out.println("¿Qué más desea hacer?");
+				System.out.println("Â¿QuÃ© mÃ¡s desea hacer?");
 			else
-				System.out.println("¡Hasta pronto!");
+				System.out.println("Â¡Hasta pronto!");
 		} while (menuOption != '0');
 
 		sc.close();
