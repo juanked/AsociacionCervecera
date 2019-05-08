@@ -9,25 +9,28 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class AsociacionCervecera {
-	Statement st = null;
-	Connection conn = null;
+	Statement st;
+	Connection conn;
+
 	public static void main(String[] args) {
 		AsociacionCervecera ac = new AsociacionCervecera();
+		ac.DBconnect();
 		ac.mainMenu();
+		ac.DBclose();
 	}
-	
-	public boolean DBconnect() throws Exception {
+
+	public boolean DBconnect() {
 		boolean conectado = false;
 		try {
 			String drv = "com.mysql.jdbc.Driver";
 			String serverAddress = "localhost:3306";
-			String db = "ac";
+			String db = "AsociacionCervecera";
 			String user = "bd";
 			String pass = "bdupm";
 			String url = "jdbc:mysql://" + serverAddress + "/" + db;
 			Class.forName(drv);
 			System.out.println("Procediendo a conexión");
-			Connection conn = DriverManager.getConnection(url, user, pass);
+			conn = DriverManager.getConnection(url, user, pass);
 			conn.setAutoCommit(true);
 			conectado = true;
 		} catch (Exception excepcion) {
@@ -38,7 +41,7 @@ public class AsociacionCervecera {
 
 	}
 
-	public boolean DBclose() throws Exception {
+	public boolean DBclose() {
 		boolean conectado = false;
 		System.out.println("Saliendo.. ¡hasta otra!");
 		if (conn != null) {
@@ -56,103 +59,109 @@ public class AsociacionCervecera {
 
 	}
 
-			public boolean createTableEmpleado() throws SQLException {
+	public boolean createTableEmpleado() {
 		boolean creado = false;
 		try {
 			st = conn.createStatement();
 			String sql = "CREATE TABLE Empleado"
-					+ "(id_empleado INTEGER not NULL," + "nombre VARCHAR(255)"
-					+ "direccion VARCHAR(255)" + "telefono VARCHAR(255)"
-					+ "salario DOUBLE" + "id_bar INTEGER not NULL"
-					+ "PRIMARY KEY (id_empleado)" + "FOREIGN KEY(id_bar)";
+					+ "(id_empleado INTEGER not NULL," + "nombre VARCHAR(50),"
+					+ "direccion VARCHAR(100)," + "telefono VARCHAR(15),"
+					+ "salario DOUBLE," + "id_bar INTEGER not NULL,"
+					+ "PRIMARY KEY (id_empleado),"
+					+ "FOREIGN KEY(id_bar) references bar);";
 			st.executeUpdate(sql);
 			System.out.println("Creando tabla Empleado");
 			creado = true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("No se ha podido crear la tabla");
+			System.out.println("No se ha podido crear la tabla empleado");
 		}
 		return creado;
 	}
 
-	public boolean createTableGusta() throws SQLException {
+	public boolean createTableGusta() {
 		boolean creado = false;
 		try {
 			st = conn.createStatement();
-			String sql = "CREATE TABLE Gusta" + "(id_bar INTEGER not NULL,"
-					+ "id_socio INTEGER not NULL"
-					+ "id_cerveza INTEGER not NULL"
-					+ "id_bar INTEGER not NULL"
-					+ "PRIMARY KEY (id_socio, id_cerveza, id_bar)"
-					+ "FOREIGN KEY(id_socio) references Socio"
-					+ "FOREIGN KEY(id_cerveza) references cerveza"
-					+ "FOREIGN KEY(id_bar) references Bar";
+			String sql = "CREATE TABLE Gusta" + "(id_socio INTEGER not NULL,"
+					+ "id_cerveza INTEGER not NULL,"
+					+ "id_bar INTEGER not NULL,"
+					+ "PRIMARY KEY (id_socio, id_cerveza, id_bar),"
+					+ "FOREIGN KEY(id_socio) references Socio,"
+					+ "FOREIGN KEY(id_cerveza) references cerveza,"
+					+ "FOREIGN KEY(id_bar) references Bar);";
 			st.executeUpdate(sql);
 			System.out.println("Creando tabla Gusta");
 			creado = true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("No se ha podido crear la tabla");
+			System.out.println("No se ha podido crear la tabla gusta");
 		}
+		System.out.println(creado);
 		return creado;
 	}
 
-	public boolean loadEmpleados() throws SQLException {
+	public boolean loadEmpleados() {
 		boolean correcto = false;
-		int id[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-		String nombre[] = { "Carmen Matin", "Ana Ruiz", "Mario Moreno",
-				"Laura Romero", "Luis Ruiz", "Benito Gil", "Dolores Molina",
-				"Julio Garrido", "Pilar Romero" };
-		String direccion[] = { "C/Sol,1", "C/Luna,2", "C/Estrella,3",
-				"C/Mercurio,4", "C/Venus,5", "C/Marte,6", "C/Jupiter,7",
-				"C/Jupiter,7", "C/Saturno,8" };
-		int telefono[] = { 699999999, 699999988, 699999977, 699999966,
-				699999955, 699999944, 699999933, 699999922, 699999911 };
-		float salario[] = { 1600, 1300, 1200, 1450, 1350, 1500, 1350, 1350,
-				1650 };
-		int id_bar[] = { 1, 2, 2, 3, 3, 3, 4, 4, 5 };
-		String query = "INSERT INTO Empleado(id_empleado,nombre,direccion,telefono,salario,id_bar) VALUES (?,?,?,?,?,?)";
-		PreparedStatement st = conn.prepareStatement(query);
-		for (int i = 0; i < id.length; i++) {
-			st.setInt(1, id[i]);
-			st.setString(2, nombre[i]);
-			st.setString(3, direccion[i]);
-			st.setInt(4, telefono[i]);
-			st.setFloat(5, salario[i]);
-			st.setInt(6, id_bar[i]);
-			int resultado = st.executeUpdate();
-			if (resultado == 1) {
-				System.out.println("Se ha insertado correctamente");
-				correcto = true;
+		try {
+			int id[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+			String nombre[] = { "Carmen Matin", "Ana Ruiz", "Mario Moreno",
+					"Laura Romero", "Luis Ruiz", "Benito Gil",
+					"Dolores Molina", "Julio Garrido", "Pilar Romero" };
+			String direccion[] = { "C/Sol,1", "C/Luna,2", "C/Estrella,3",
+					"C/Mercurio,4", "C/Venus,5", "C/Marte,6", "C/Jupiter,7",
+					"C/Jupiter,7", "C/Saturno,8" };
+			int telefono[] = { 699999999, 699999988, 699999977, 699999966,
+					699999955, 699999944, 699999933, 699999922, 699999911 };
+			float salario[] = { 1600, 1300, 1200, 1450, 1350, 1500, 1350, 1350,
+					1650 };
+			int id_bar[] = { 1, 2, 2, 3, 3, 3, 4, 4, 5 };
+			String query = "INSERT INTO Empleado(id_empleado,nombre,direccion,telefono,salario,id_bar) VALUES (?,?,?,?,?,?)";
+			PreparedStatement st = conn.prepareStatement(query);
+			for (int i = 0; i < id.length; i++) {
+				st.setInt(1, id[i]);
+				st.setString(2, nombre[i]);
+				st.setString(3, direccion[i]);
+				st.setInt(4, telefono[i]);
+				st.setFloat(5, salario[i]);
+				st.setInt(6, id_bar[i]);
+				int resultado = st.executeUpdate();
+				if (resultado == 1) {
+					System.out.println("Se ha insertado correctamente");
+					correcto = true;
+				}
+
+				else
+					System.out
+							.println("Ha habido un problema con la inserccion de empleado");
 			}
-
-			else
-				System.out.println("Ha habido un problema con la inserccion");
-
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		System.out.println(correcto);
 		return correcto;
 	}
 
-	public boolean loadGustos(String fileName) throws SQLException {
+	public boolean loadGustos(String fileName) {
 		boolean carga = false;
-		try{
+		try {
 			ArrayList<Gusto> gusto = readData(fileName);
 			String query = "INSERT INTO Gusta(id_socio, id_cerveza, id_bar) VALUES(?,?,?)";
 			PreparedStatement st = conn.prepareStatement(query);
-			for(int i = 0; i<gusto.size(); i++){
+			for (int i = 0; i < gusto.size(); i++) {
 				st.setInt(1, gusto.get(i).idSocio);
 				st.setInt(2, gusto.get(i).idCerveza);
 				st.setInt(3, gusto.get(i).idBar);
 			}
 			st.executeQuery();
 			st.executeUpdate();
-			carga =true;
-		}
-		catch(SQLException e){
+			carga = true;
+		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Ha habido un problema con la inserccion");
+			System.out
+					.println("Ha habido un problema con la inserccion de gusta");
 		}
-			
+		System.out.println(carga);
 		return carga;
 	}
 
@@ -287,7 +296,6 @@ public class AsociacionCervecera {
 		} catch (Exception e) {
 			System.err.println("Error al leer el fichero.");
 		}
-
 		return result;
 	}
 
