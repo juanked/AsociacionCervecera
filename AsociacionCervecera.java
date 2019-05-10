@@ -167,7 +167,31 @@ public class AsociacionCervecera {
 	}
 
 	public ArrayList<Bar> getBarData() {
-		return null;
+		ArrayList<Bar> respuesta = new ArrayList<Bar>();
+		try {
+			String query = "SELECT * FROM bar";
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			
+			while (rs.next()) {
+				int id = rs.getInt("ID_bar");
+				String nombre = rs.getString("nombre");
+				String direccion = rs.getString("direccion");
+				respuesta.add(new Bar(id,nombre,direccion));
+			}
+//			int resultado = st.executeUpdate();
+//			if (resultado == 1) {
+//				System.out.println("Se ha insertado correctamente");
+//			} else {
+//				System.out.println("Ha habido un problema");
+//				respuesta = null;
+//			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			respuesta = null;
+		}
+		return respuesta;
 	}
 
 	public ArrayList<Cerveza> getCervezasFabricante() {
