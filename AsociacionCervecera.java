@@ -153,7 +153,6 @@ public class AsociacionCervecera {
 				st.setInt(2, gusto.get(i).idCerveza);
 				st.setInt(3, gusto.get(i).idBar);
 			}
-			st.executeQuery();
 			st.executeUpdate();
 			carga = true;
 		} catch (SQLException e) {
