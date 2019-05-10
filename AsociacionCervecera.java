@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -177,11 +179,53 @@ public class AsociacionCervecera {
 	}
 
 	public boolean addFotoColumn() {
-		return false;
+		boolean correcto = false;
+		try {
+			String query = "ALTER TABLE empleado ADD COLUMN foto LONGBOLOB";
+			PreparedStatement pst = conn.prepareStatement(query);
+			int resultado = pst.executeUpdate();
+			if (resultado == 1) {
+				System.out.println("Se ha insertado correctamente");
+				correcto = true;
+			} else
+				System.out.println("Ha habido un problema con la inserccion de la columna");
+		} catch (SQLException e) {
+			System.out.println("Ha habido un problema con la inserccion de la columna");
+			e.printStackTrace();
+		}
+		return correcto;		
 	}
 
 	public boolean addEmpleadoFoto() {
-		return false;
+		boolean correcto = false;
+		try {
+			String query = "INSERT INTO Empleado(id_empleado,nombre,direccion,telefono,salario,id_bar, foto)"
+				+ " VALUES (?,?,?,?,?,?,?)"; //sentencia SQL que se ejecutará
+			PreparedStatement pst = conn.prepareStatement(query);
+			File file = new File("HomerSimpson.jpg");
+			FileInputStream fis = new FileInputStream(file);
+			//Inserciones según el enunciado de la práctica
+			pst.setInt(1, 10);
+			pst.setString(2, "Homer Simpson");
+			pst.setString(3, "742 Evergreen Terrace");
+			pst.setNull(4, java.sql.Types.INTEGER); //null pero definimos que en ese campo tiene que ir un INTEGER
+			pst.setFloat(5, 1500);
+			pst.setInt(6, 1);
+			pst.setBinaryStream(7, fis, (int) file.length());
+			int resultado = pst.executeUpdate();
+			if (resultado == 1) {
+				System.out.println("Se ha insertado correctamente");
+				correcto = true;
+			} else
+				System.out.println("Ha habido un problema con la inserccion de los datos");
+		} catch (SQLException e) {
+			System.out.println("Ha habido un problema con la inserccion de los datos");
+			e.printStackTrace();
+		} catch (FileNotFoundException e){
+			System.out.println("El archivo indicado no existe o no se encuentra en esta dirección");
+			e.printStackTrace();
+		}
+		return correcto;
 	}
 
 	/*
