@@ -64,15 +64,21 @@ public class AsociacionCervecera {
 		boolean creado = false;
 		try {
 			st = conn.createStatement();
-			String sql = "CREATE TABLE empleado"
-					+ "(id_empleado INTEGER not NULL," + "nombre VARCHAR(50),"
-					+ "direccion VARCHAR(100)," + "telefono VARCHAR(15),"
-					+ "salario DOUBLE," + "id_bar INTEGER not NULL,"
-					+ "PRIMARY KEY (id_empleado),"
-					+ "FOREIGN KEY(id_bar) REFERENCES bar(ID_bar));";
-			st.executeUpdate(sql);
-			System.out.println("Creando tabla Empleado");
-			creado = true;
+			String query = "SELECT * FROM gusta;";
+			ResultSet rs = st.executeQuery(query);
+			if (rs == null) {
+				st = conn.createStatement();
+				String sql = "CREATE TABLE empleado" + "(id_empleado INTEGER not NULL," + "nombre VARCHAR(50),"
+						+ "direccion VARCHAR(100)," + "telefono VARCHAR(15)," + "salario DOUBLE,"
+						+ "id_bar INTEGER not NULL," + "PRIMARY KEY (id_empleado),"
+						+ "FOREIGN KEY(id_bar) REFERENCES bar(ID_bar));";
+				st.executeUpdate(sql);
+				System.out.println("Creando tabla Empleado");
+				creado = true;
+			} else {
+				System.out.println("La tabla ya existe");
+				creado = false;
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("No se ha podido crear la tabla empleado");
@@ -84,16 +90,23 @@ public class AsociacionCervecera {
 		boolean creado = false;
 		try {
 			st = conn.createStatement();
-			String sql = "CREATE TABLE gusta" + "(id_socio INTEGER not NULL,"
-					+ "id_cerveza INTEGER not NULL,"
-					+ "id_bar INTEGER not NULL,"
-					+ "PRIMARY KEY (id_socio, id_cerveza, id_bar),"
-					+ "FOREIGN KEY(id_socio) REFERENCES socio(ID_socio),"
-					+ "FOREIGN KEY(id_cerveza) REFERENCES cerveza(ID_cerveza),"
-					+ "FOREIGN KEY(id_bar) REFERENCES bar(ID_bar));";
-			st.executeUpdate(sql);
-			System.out.println("Creando tabla Gusta");
-			creado = true;
+			String query = "SELECT * FROM gusta;";
+			ResultSet rs = st.executeQuery(query);
+			if (rs == null) {
+
+				st = conn.createStatement();
+				String sql = "CREATE TABLE gusta" + "(id_socio INTEGER not NULL," + "id_cerveza INTEGER not NULL,"
+						+ "id_bar INTEGER not NULL," + "PRIMARY KEY (id_socio, id_cerveza, id_bar),"
+						+ "FOREIGN KEY(id_socio) REFERENCES socio(ID_socio),"
+						+ "FOREIGN KEY(id_cerveza) REFERENCES cerveza(ID_cerveza),"
+						+ "FOREIGN KEY(id_bar) REFERENCES bar(ID_bar));";
+				st.executeUpdate(sql);
+				System.out.println("Creando tabla Gusta");
+				creado = true;
+			} else {
+				System.out.println("La tabla ya existe");
+				creado = false;
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("No se ha podido crear la tabla gusta");
@@ -106,16 +119,13 @@ public class AsociacionCervecera {
 		boolean correcto = false;
 		try {
 			int id[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-			String nombre[] = { "Carmen Matin", "Ana Ruiz", "Mario Moreno",
-					"Laura Romero", "Luis Ruiz", "Benito Gil",
+			String nombre[] = { "Carmen Matin", "Ana Ruiz", "Mario Moreno", "Laura Romero", "Luis Ruiz", "Benito Gil",
 					"Dolores Molina", "Julio Garrido", "Pilar Romero" };
-			String direccion[] = { "C/Sol,1", "C/Luna,2", "C/Estrella,3",
-					"C/Mercurio,4", "C/Venus,5", "C/Marte,6", "C/Jupiter,7",
-					"C/Jupiter,7", "C/Saturno,8" };
-			int telefono[] = { 699999999, 699999988, 699999977, 699999966,
-					699999955, 699999944, 699999933, 699999922, 699999911 };
-			float salario[] = { 1600, 1300, 1200, 1450, 1350, 1500, 1350, 1350,
-					1650 };
+			String direccion[] = { "C/Sol,1", "C/Luna,2", "C/Estrella,3", "C/Mercurio,4", "C/Venus,5", "C/Marte,6",
+					"C/Jupiter,7", "C/Jupiter,7", "C/Saturno,8" };
+			int telefono[] = { 699999999, 699999988, 699999977, 699999966, 699999955, 699999944, 699999933, 699999922,
+					699999911 };
+			float salario[] = { 1600, 1300, 1200, 1450, 1350, 1500, 1350, 1350, 1650 };
 			int id_bar[] = { 1, 2, 2, 3, 3, 3, 4, 4, 5 };
 			String query = "INSERT INTO Empleado(id_empleado,nombre,direccion,telefono,salario,id_bar) VALUES (?,?,?,?,?,?)";
 			PreparedStatement st = conn.prepareStatement(query);
@@ -133,8 +143,7 @@ public class AsociacionCervecera {
 				}
 
 				else
-					System.out
-							.println("Ha habido un problema con la inserccion de empleado");
+					System.out.println("Ha habido un problema con la inserccion de empleado");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -158,8 +167,7 @@ public class AsociacionCervecera {
 			carga = true;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out
-					.println("Ha habido un problema con la inserccion de gusta");
+			System.out.println("Ha habido un problema con la inserccion de gusta");
 		}
 		System.out.println(carga);
 		return carga;
@@ -171,12 +179,12 @@ public class AsociacionCervecera {
 			String query = "SELECT * FROM bar";
 			Statement st = conn.createStatement();
 			ResultSet rs = st.executeQuery(query);
-			
+
 			while (rs.next()) {
 				int id = rs.getInt("ID_bar");
 				String nombre = rs.getString("nombre");
 				String direccion = rs.getString("direccion");
-				respuesta.add(new Bar(id,nombre,direccion));
+				respuesta.add(new Bar(id, nombre, direccion));
 			}
 //			int resultado = st.executeUpdate();
 //			if (resultado == 1) {
@@ -185,7 +193,7 @@ public class AsociacionCervecera {
 //				System.out.println("Ha habido un problema");
 //				respuesta = null;
 //			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			respuesta = null;
@@ -216,22 +224,22 @@ public class AsociacionCervecera {
 			System.out.println("Ha habido un problema con la inserccion de la columna");
 			e.printStackTrace();
 		}
-		return correcto;		
+		return correcto;
 	}
 
 	public boolean addEmpleadoFoto() {
 		boolean correcto = false;
 		try {
 			String query = "INSERT INTO empleado(id_empleado,nombre,direccion,telefono,salario,id_bar, foto)"
-				+ " VALUES (?,?,?,?,?,?,?)"; //sentencia SQL que se ejecutará
+					+ " VALUES (?,?,?,?,?,?,?)"; // sentencia SQL que se ejecutará
 			PreparedStatement pst = conn.prepareStatement(query);
 			File file = new File("HomerSimpson.jpg");
 			FileInputStream fis = new FileInputStream(file);
-			//Inserciones según el enunciado de la práctica
+			// Inserciones según el enunciado de la práctica
 			pst.setInt(1, 10);
 			pst.setString(2, "Homer Simpson");
 			pst.setString(3, "742 Evergreen Terrace");
-			pst.setNull(4, java.sql.Types.INTEGER); //null pero definimos que en ese campo tiene que ir un INTEGER
+			pst.setNull(4, java.sql.Types.INTEGER); // null pero definimos que en ese campo tiene que ir un INTEGER
 			pst.setFloat(5, 1500);
 			pst.setInt(6, 1);
 			pst.setBinaryStream(7, fis, (int) file.length());
@@ -244,7 +252,7 @@ public class AsociacionCervecera {
 		} catch (SQLException e) {
 			System.out.println("Ha habido un problema con la inserccion de los datos");
 			e.printStackTrace();
-		} catch (FileNotFoundException e){
+		} catch (FileNotFoundException e) {
 			System.out.println("El archivo indicado no existe o no se encuentra en esta dirección");
 			e.printStackTrace();
 		}
@@ -253,12 +261,12 @@ public class AsociacionCervecera {
 
 	/*
 	 * The private section of the code starts here. It is convenient to take a
-	 * glance to the code, but it is STRICTLY FORBIDDEN to modify any part of
-	 * the code bellow these lines.
+	 * glance to the code, but it is STRICTLY FORBIDDEN to modify any part of the
+	 * code bellow these lines.
 	 * 
-	 * Aquí comienza la parte "privada" del código. Es conviniente echar un
-	 * vistazo al código, pero está ESTRÍCTICAMENTE PROHIBIDO modificar
-	 * cualquier parte del código bajo estas líneas.
+	 * Aquí comienza la parte "privada" del código. Es conviniente echar un vistazo
+	 * al código, pero está ESTRÍCTICAMENTE PROHIBIDO modificar cualquier parte del
+	 * código bajo estas líneas.
 	 */
 
 	private void mainMenu() {
@@ -268,15 +276,12 @@ public class AsociacionCervecera {
 		// Main menu loop
 		do {
 			System.out.println("Escoja una opción: ");
-			System.out
-					.println("  1) Crear las tablas \"empleado\" y \"gusta\".");
-			System.out
-					.println("  2) Cargar datos de los empleados y los gustos.");
+			System.out.println("  1) Crear las tablas \"empleado\" y \"gusta\".");
+			System.out.println("  2) Cargar datos de los empleados y los gustos.");
 			System.out.println("  3) Listar los bares almacenados.");
 			System.out.println("  4) Listar las cervezas de un fabricante.");
 			System.out.println("  5) Listar las cervezas más populares.");
-			System.out
-					.println("  6) Añadir columna de foto a la tabla \"empleado\".");
+			System.out.println("  6) Añadir columna de foto a la tabla \"empleado\".");
 			System.out.println("  7) Añadir un nuevo empleado con foto.");
 			System.out.println("  0) Salir de la aplicación.");
 
@@ -306,8 +311,7 @@ public class AsociacionCervecera {
 				createTableGusta();
 				break;
 			case '2':
-				System.out
-						.println("Cargando datos de la tabla \"empleado\"...");
+				System.out.println("Cargando datos de la tabla \"empleado\"...");
 				loadEmpleados();
 				System.out.println("Cargando datos de la tabla \"gusta\"...");
 				loadGustos("gustos.csv");
@@ -325,8 +329,7 @@ public class AsociacionCervecera {
 				System.out.println(c.cervezasToString(cervezas) + '\n');
 				break;
 			case '6':
-				System.out
-						.println("Añadiendo columa \"foto\" en la tabla \"empleado\"...");
+				System.out.println("Añadiendo columa \"foto\" en la tabla \"empleado\"...");
 				addFotoColumn();
 				break;
 			case '7':
@@ -353,8 +356,8 @@ public class AsociacionCervecera {
 
 			while (sc_file.hasNextLine()) {
 				String[] fields = sc_file.nextLine().split(";");
-				Gusto row = new Gusto(Integer.valueOf(fields[0]),
-						Integer.valueOf(fields[1]), Integer.valueOf(fields[2]));
+				Gusto row = new Gusto(Integer.valueOf(fields[0]), Integer.valueOf(fields[1]),
+						Integer.valueOf(fields[2]));
 				result.add(row);
 			}
 
@@ -410,8 +413,7 @@ public class AsociacionCervecera {
 			String result = "Listado de bares: \n";
 			if (bars != null)
 				for (Bar bar : bars) {
-					result = result + "  " + bar.idBar + " - " + bar.nombre
-							+ " - " + bar.direccion + "\n";
+					result = result + "  " + bar.idBar + " - " + bar.nombre + " - " + bar.direccion + "\n";
 				}
 			return result;
 		}
@@ -473,8 +475,7 @@ public class AsociacionCervecera {
 			String result = "Listado de cervezas: \n";
 			if (cervezas != null)
 				for (Cerveza c : cervezas) {
-					result = result + "  " + c.idCerveza + " - " + c.nombre
-							+ " - " + c.caracteristicas + " - "
+					result = result + "  " + c.idCerveza + " - " + c.nombre + " - " + c.caracteristicas + " - "
 							+ c.idFabricante + "\n";
 				}
 			return result;
