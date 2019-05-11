@@ -36,7 +36,7 @@ public class AsociacionCervecera {
 			conn.setAutoCommit(true);
 			conectado = true;
 		} catch (Exception excepcion) {
-			System.out.println("Ha habido un problema con la conexción");
+			System.out.println("Ha habido un problema con la conexión");
 			excepcion.printStackTrace();
 		}
 		return conectado;
@@ -44,12 +44,11 @@ public class AsociacionCervecera {
 	}
 
 	public boolean DBclose() {
-		boolean conectado = false;
-		System.out.println("Saliendo.. ¡hasta otra!");
+		boolean desconectado = false;
 		if (conn != null) {
 			try {
 				conn.close();
-				conectado = true;
+				desconectado = true;
 			} catch (SQLException e) {
 				System.out.println("Ha habido un problema con la desconexión:");
 				e.printStackTrace();
@@ -57,7 +56,7 @@ public class AsociacionCervecera {
 			System.exit(0);
 		} else
 			System.exit(0);
-		return conectado;
+		return desconectado;
 
 	}
 
@@ -65,16 +64,16 @@ public class AsociacionCervecera {
 		boolean creado = false;
 		try {
 			st = conn.createStatement();
-			String sql = "CREATE TABLE Empleado"
+			String sql = "CREATE TABLE empleado"
 					+ "(id_empleado INTEGER not NULL," + "nombre VARCHAR(50),"
 					+ "direccion VARCHAR(100)," + "telefono VARCHAR(15),"
 					+ "salario DOUBLE," + "id_bar INTEGER not NULL,"
 					+ "PRIMARY KEY (id_empleado),"
-					+ "FOREIGN KEY(id_bar) references bar);";
+					+ "FOREIGN KEY(id_bar) REFERENCES bar(ID_bar));";
 			st.executeUpdate(sql);
 			System.out.println("Creando tabla Empleado");
 			creado = true;
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("No se ha podido crear la tabla empleado");
 		}
@@ -85,17 +84,17 @@ public class AsociacionCervecera {
 		boolean creado = false;
 		try {
 			st = conn.createStatement();
-			String sql = "CREATE TABLE Gusta" + "(id_socio INTEGER not NULL,"
+			String sql = "CREATE TABLE gusta" + "(id_socio INTEGER not NULL,"
 					+ "id_cerveza INTEGER not NULL,"
 					+ "id_bar INTEGER not NULL,"
 					+ "PRIMARY KEY (id_socio, id_cerveza, id_bar),"
-					+ "FOREIGN KEY(id_socio) references Socio,"
-					+ "FOREIGN KEY(id_cerveza) references cerveza,"
-					+ "FOREIGN KEY(id_bar) references Bar);";
+					+ "FOREIGN KEY(id_socio) REFERENCES socio(ID_socio),"
+					+ "FOREIGN KEY(id_cerveza) REFERENCES cerveza(ID_cerveza),"
+					+ "FOREIGN KEY(id_bar) REFERENCES bar(ID_bar));";
 			st.executeUpdate(sql);
 			System.out.println("Creando tabla Gusta");
 			creado = true;
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("No se ha podido crear la tabla gusta");
 		}
@@ -205,14 +204,14 @@ public class AsociacionCervecera {
 	public boolean addFotoColumn() {
 		boolean correcto = false;
 		try {
-			String query = "ALTER TABLE empleado ADD COLUMN foto LONGBOLOB";
+			String query = "ALTER TABLE empleado ADD COLUMN foto LONGBLOB";
 			PreparedStatement pst = conn.prepareStatement(query);
 			int resultado = pst.executeUpdate();
 			if (resultado == 1) {
 				System.out.println("Se ha insertado correctamente");
 				correcto = true;
 			} else
-				System.out.println("Ha habido un problema con la inserccion de la columna");
+				System.out.println("Ha habido un problema con la inserccion de la columna1");
 		} catch (SQLException e) {
 			System.out.println("Ha habido un problema con la inserccion de la columna");
 			e.printStackTrace();
@@ -223,7 +222,7 @@ public class AsociacionCervecera {
 	public boolean addEmpleadoFoto() {
 		boolean correcto = false;
 		try {
-			String query = "INSERT INTO Empleado(id_empleado,nombre,direccion,telefono,salario,id_bar, foto)"
+			String query = "INSERT INTO empleado(id_empleado,nombre,direccion,telefono,salario,id_bar, foto)"
 				+ " VALUES (?,?,?,?,?,?,?)"; //sentencia SQL que se ejecutará
 			PreparedStatement pst = conn.prepareStatement(query);
 			File file = new File("HomerSimpson.jpg");
