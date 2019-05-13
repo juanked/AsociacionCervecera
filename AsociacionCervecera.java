@@ -159,9 +159,9 @@ public class AsociacionCervecera {
 		boolean carga = false;
 		try {
 			ArrayList<Gusto> gusto = readData(fileName);
+			String query = "INSERT INTO gusta(id_socio, id_cerveza, id_bar) VALUES(?,?,?)";
+			PreparedStatement st = conn.prepareStatement(query);
 			for (int i = 0; i < gusto.size(); i++) {
-				String query = "INSERT INTO gusta(id_socio, id_cerveza, id_bar) VALUES(?,?,?)";
-				PreparedStatement st = conn.prepareStatement(query);
 				st.setInt(1, gusto.get(i).idSocio);
 				st.setInt(2, gusto.get(i).idCerveza);
 				st.setInt(3, gusto.get(i).idBar);
