@@ -68,7 +68,7 @@ public class AsociacionCervecera {
 			ResultSet rs = st.executeQuery(query);
 			System.out.println(rs.toString());
 			
-			if (rs.toString().contentEquals("com.mysql.jdbc.JDBC42ResultSet@701fc37a")) {
+//			if (rs.toString().contentEquals("com.mysql.jdbc.JDBC42ResultSet@701fc37a")) {
 				st = conn.createStatement();
 				String sql = "CREATE TABLE empleado" + "(id_empleado INTEGER not NULL," + "nombre VARCHAR(50),"
 						+ "direccion VARCHAR(100)," + "telefono VARCHAR(15)," + "salario DOUBLE,"
@@ -77,10 +77,10 @@ public class AsociacionCervecera {
 				st.executeUpdate(sql);
 				System.out.println("Creando tabla Empleado PATATA");
 				creado = true;
-			} else {
-				System.out.println("La tabla ya existe");
-				creado = false;
-			}
+//			} else {
+//				System.out.println("La tabla ya existe");
+//				creado = false;
+//			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("No se ha podido crear la tabla empleado");
@@ -159,14 +159,14 @@ public class AsociacionCervecera {
 		boolean carga = false;
 		try {
 			ArrayList<Gusto> gusto = readData(fileName);
-			String query = "INSERT INTO gusta(id_socio, id_cerveza, id_bar) VALUES(?,?,?)";
-			PreparedStatement st = conn.prepareStatement(query);
 			for (int i = 0; i < gusto.size(); i++) {
+				String query = "INSERT INTO gusta(id_socio, id_cerveza, id_bar) VALUES(?,?,?)";
+				PreparedStatement st = conn.prepareStatement(query);
 				st.setInt(1, gusto.get(i).idSocio);
 				st.setInt(2, gusto.get(i).idCerveza);
 				st.setInt(3, gusto.get(i).idBar);
+				st.executeUpdate();
 			}
-			st.executeUpdate();
 			carga = true;
 		} catch (SQLException e) {
 			e.printStackTrace();
