@@ -121,17 +121,17 @@ public class AsociacionCervecera {
 
 	public boolean loadEmpleados() {
 		boolean correcto = false;
+		int id[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+		String nombre[] = { "Carmen Matin", "Ana Ruiz", "Mario Moreno", "Laura Romero", "Luis Ruiz", "Benito Gil",
+				"Dolores Molina", "Julio Garrido", "Pilar Romero" };
+		String direccion[] = { "C/Sol,1", "C/Luna,2", "C/Estrella,3", "C/Mercurio,4", "C/Venus,5", "C/Marte,6",
+				"C/Jupiter,7", "C/Jupiter,7", "C/Saturno,8" };
+		int telefono[] = { 699999999, 699999988, 699999977, 699999966, 699999955, 699999944, 699999933, 699999922,
+				699999911 };
+		float salario[] = { 1600, 1300, 1200, 1450, 1350, 1500, 1350, 1350, 1650 };
+		int id_bar[] = { 1, 2, 2, 3, 3, 3, 4, 4, 5 };
+		String query = "INSERT INTO empleado(id_empleado,nombre,direccion,telefono,salario,id_bar) VALUES (?,?,?,?,?,?)";
 		try {
-			int id[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-			String nombre[] = { "Carmen Matin", "Ana Ruiz", "Mario Moreno", "Laura Romero", "Luis Ruiz", "Benito Gil",
-					"Dolores Molina", "Julio Garrido", "Pilar Romero" };
-			String direccion[] = { "C/Sol,1", "C/Luna,2", "C/Estrella,3", "C/Mercurio,4", "C/Venus,5", "C/Marte,6",
-					"C/Jupiter,7", "C/Jupiter,7", "C/Saturno,8" };
-			int telefono[] = { 699999999, 699999988, 699999977, 699999966, 699999955, 699999944, 699999933, 699999922,
-					699999911 };
-			float salario[] = { 1600, 1300, 1200, 1450, 1350, 1500, 1350, 1350, 1650 };
-			int id_bar[] = { 1, 2, 2, 3, 3, 3, 4, 4, 5 };
-			String query = "INSERT INTO empleado(id_empleado,nombre,direccion,telefono,salario,id_bar) VALUES (?,?,?,?,?,?)";
 			PreparedStatement st = conn.prepareStatement(query);
 			for (int i = 0; i < id.length; i++) {
 				st.setInt(1, id[i]);
@@ -145,7 +145,6 @@ public class AsociacionCervecera {
 					System.out.println("Se ha insertado correctamente"+i);
 					correcto = true;
 				}
-
 				else
 					System.out.println("Ha habido un problema con la inserccion de empleado");
 			}
