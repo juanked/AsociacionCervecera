@@ -96,7 +96,7 @@ public class AsociacionCervecera {
 			String query = "SHOW TABLES LIKE 'gusta';";
 			ResultSet rs = st.executeQuery(query);
 			System.out.println(rs.toString());
-			if (rs.toString().contentEquals("com.mysql.jdbc.JDBC42ResultSet@7fad8c79")) {
+//			if (rs.toString().contentEquals("com.mysql.jdbc.JDBC42ResultSet@7fad8c79")) {
 
 				st = conn.createStatement();
 				String sql = "CREATE TABLE gusta" + "(id_socio INTEGER not NULL," + "id_cerveza INTEGER not NULL,"
@@ -107,10 +107,10 @@ public class AsociacionCervecera {
 				st.executeUpdate(sql);
 				System.out.println("Creando tabla Gusta");
 				creado = true;
-			} else {
-				System.out.println("La tabla ya existe");
-				creado = false;
-			}
+//			} else {
+//				System.out.println("La tabla ya existe");
+//				creado = false;
+//			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("No se ha podido crear la tabla gusta");
