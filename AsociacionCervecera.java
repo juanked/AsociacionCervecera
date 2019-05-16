@@ -23,64 +23,100 @@ public class AsociacionCervecera {
 		ac.DBclose();
 	}
 
+	/*
+	 * Metodo para conectarse a la base de datos
+	 * return true si se ha realizado correctamente 
+	 * return false si ha habido algun problema
+	 */
 	public boolean DBconnect() {
+		// Driver utilizado para la conexion con la base de datos
 		String drv = "com.mysql.jdbc.Driver";
+		// Parametros para conectarse a la base de datos
 		String serverAddress = "localhost:3306";
 		String db = "AsociacionCervecera";
 		String user = "bd";
 		String pass = "bdupm";
 		String url = "jdbc:mysql://" + serverAddress + "/" + db;
 		try {
-			System.out.println(conn);
+			// Se comprueba si ya hay una conexión abierta y de no haberla se crea
 			if (conn==null) {
 				Class.forName(drv);
 				System.out.println("Procediendo a conexión");
 				conn = DriverManager.getConnection(url, user, pass);
-				conn.setAutoCommit(true);
+				// Nos aseguramos de que se haga commit automaticamente
+				conn.setAutoCommit(true);									
 			}
 		} catch (Exception excepcion) {
+			// Si salta alguna excepcion se lo indica al usuario, se imprime la excepción y se procede ha devolver false
 			System.out.println("Ha habido un problema con la conexión");
 			excepcion.printStackTrace();
 			return false;
 		}
+		// En caso de que no haya habido ningun problema devuelve true
 		return true;
 	}
 
+	/*
+	 * Metodo para cerrar la conexion con la base de datos
+	 * return true si se ha desconectado correctamente 
+	 * return false si ha habido algun problema
+	 */
 	public boolean DBclose() {
+		// Se comprueba que no hay ninguna conxion habierta previamente
 		if (conn != null) {
 			try {
+				// Se cierra la conexion y se asigna null al objeto conn 
 				conn.close();
 				conn = null;
 			} catch (SQLException e) {
+				// En caso de haber algun problema lo notifica y devuelve false 
 				System.out.println("Ha habido un problema con la desconexión:");
 				e.printStackTrace();
 				return false;
 			}
+			// devuelve true si no ha habido ningun problema
 			System.exit(0);
 			return true;
 		}
+		// En caso de no haber establecido una conexion previamente lo notifica y devuelve false
+		System.out.println("No hay ninguna conexión abierta:");
 		System.exit(0);
 		return false;
 	}
 
+	/*
+	 * Metodo que crea la tabla empleado
+	 * retuen true si se ha creado con exito
+	 * retuen false si no se ha podido
+	 */
 	public boolean createTableEmpleado() {
+		// Sentencia SQL usada para crear la tabla
 		String sql = "CREATE TABLE empleado" + "(ID_empleado INTEGER not NULL," + "nombre VARCHAR(50),"
 				+ "direccion VARCHAR(100)," + "telefono VARCHAR(15)," + "salario DOUBLE," + "ID_bar INTEGER not NULL,"
 				+ "PRIMARY KEY (ID_empleado)," + "FOREIGN KEY(ID_bar) REFERENCES bar(ID_bar));";
 		try {
+			// Intenta conectarse a la base de datos si
 			DBconnect();
-			System.out.println("Creando tabla Empleado PATATA");
-			st = conn.createStatement();
-			st.executeUpdate(sql);
+			System.out.println("Creando tabla Empleado");		 
+			st = conn.createStatement();						// Se crea el statement
+			st.executeUpdate(sql);								// Se ejecuta la sentencia Sql
 		} catch (SQLException e) {
+			// En caso de dar algun problema se notifica y devuelve false
 			e.printStackTrace();
 			System.err.println("No se ha podido crear la tabla empleado");
 			return false;
 		}
+		// Si no ha habido ningun problema devuelve true
 		return true;
 	}
 
+	/*
+	 * Metodo que crea la tabla gusta
+	 * retuen true si se ha creado con exito
+	 * retuen false si no se ha podido
+	 */
 	public boolean createTableGusta() {
+		// Sentencia SQL usada para crear la tabla
 		String sql = "CREATE TABLE gusta" + "(ID_socio INTEGER not NULL," + "ID_cerveza INTEGER not NULL,"
 				+ "ID_bar INTEGER not NULL," + "PRIMARY KEY (ID_socio, ID_cerveza, ID_bar),"
 				+ "FOREIGN KEY(ID_socio) REFERENCES socio(ID_socio),"
@@ -89,16 +125,23 @@ public class AsociacionCervecera {
 		try {
 			DBconnect();
 			System.out.println("Creando tabla Gusta");
-			st = conn.createStatement();
-			st.executeUpdate(sql);
+			st = conn.createStatement();						// Se crea el statement
+			st.executeUpdate(sql);								// Se ejecuta la sentencia Sql
 		} catch (SQLException e) {
+			// En caso de dar algun problema se notifica y devuelve false
 			e.printStackTrace();
 			System.err.println("No se ha podido crear la tabla gusta");
 			return false;
 		}
+		// Si no ha habido ningun problema devuelve true
 		return true;
 	}
 
+	/*
+	 * Metodo para cargar los datos en la tabla empleado
+	 * retuen true si se ha realizado con exito
+	 * retuen false si ha habido algun problema
+	 */
 	public boolean loadEmpleados() {
 		String query = "INSERT INTO empleado(ID_empleado,nombre,direccion,telefono,salario,ID_bar) VALUES (?,?,?,?,?,?)";
 		int id[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
