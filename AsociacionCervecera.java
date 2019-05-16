@@ -37,19 +37,21 @@ public class AsociacionCervecera {
 		String url = "jdbc:mysql://" + serverAddress + "/" + db;
 		try {
 			// Se comprueba si ya hay una conexión abierta y de no haberla se crea
-			if (conn == null) {
+			if (conn == null || conn.isClosed()) {
 				Class.forName(drv);
 				System.out.println("Procediendo a conexión");
 				conn = DriverManager.getConnection(url, user, pass);
 				// Nos aseguramos de que se haga commit automaticamente
 				conn.setAutoCommit(true);
 			}
-		} catch (Exception excepcion) {
+		} catch (SQLException e) {
 			// Si salta alguna excepcion se lo indica al usuario, se imprime la excepción y
 			// se procede a devolver false
-			System.out.println("Ha habido un problema con la conexión");
-			excepcion.printStackTrace();
+			System.err.println("Ha habido un problema con la conexión");
+			e.printStackTrace();
 			return false;
+		} catch (ClassNotFoundException e2) {
+			e2.printStackTrace();
 		}
 		// En caso de que no haya habido ningun problema devuelve true
 		return true;
@@ -65,7 +67,7 @@ public class AsociacionCervecera {
 			try {
 				// Se cierra la conexion y se asigna null al objeto conn
 				conn.close();
-				conn = null;
+//				conn = null;
 			} catch (SQLException e) {
 				// En caso de haber algun problema lo notifica y devuelve false
 				System.out.println("Ha habido un problema con la desconexión:");
