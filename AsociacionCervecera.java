@@ -5,7 +5,6 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-//import java.io.ObjectInputStream.GetField;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -23,13 +22,14 @@ public class AsociacionCervecera {
 	}
 
 	/*
-	 * Metodo para conectarse a la base de datos return true si se ha realizado
-	 * correctamente return false si ha habido algun problema
+	 * Método para conectarse a la base de datos 
+	 * return true si se ha realizado correctamente
+	 * return false si ha habido algún problema
 	 */
 	public boolean DBconnect() {
-		// Driver utilizado para la conexion con la base de datos
+		// Driver utilizado para la conexión con la base de datos
 		String drv = "com.mysql.jdbc.Driver";
-		// Parametros para conectarse a la base de datos
+		// Parámetros para conectarse a la base de datos
 		String serverAddress = "localhost:3306";
 		String db = "AsociacionCervecera";
 		String user = "bd";
@@ -44,50 +44,50 @@ public class AsociacionCervecera {
 				// Nos aseguramos de que se haga commit automaticamente
 				conn.setAutoCommit(true);
 			}
+		// En caso de dar algún problema se notifica y devuelve false
 		} catch (SQLException e) {
-			// Si salta alguna excepcion se lo indica al usuario, se imprime la excepción y
-			// se procede a devolver false
 			System.err.println("Ha habido un problema con la conexión");
 			e.printStackTrace();
 			return false;
 		} catch (ClassNotFoundException e2) {
 			e2.printStackTrace();
 		}
-		// En caso de que no haya habido ningun problema devuelve true
+		// En caso de que no haya habido ningún problema devuelve true
 		return true;
 	}
 
 	/*
-	 * Método para cerrar la conexión con la base de datos return true si se ha
-	 * desconectado correctamente return false si ha habido algun problema
+	 * Método para cerrar la conexión con la base de datos 
+	 * return true si se ha desconectado correctamente 
+	 * return false si ha habido algún problema
 	 */
 	public boolean DBclose() {
-		// Se comprueba que no hay ninguna conexión abierta previamente
+		// Se comprueba que no hay ningúna conexión abierta previamente
 		if (conn != null) {
 			try {
-				// Se cierra la conexion y se asigna null al objeto conn
+				// Se cierra la conexión
 				conn.close();
-//				conn = null;
+			// En caso de haber algún problema lo notifica y devuelve false
 			} catch (SQLException e) {
-				// En caso de haber algun problema lo notifica y devuelve false
 				System.out.println("Ha habido un problema con la desconexión:");
 				e.printStackTrace();
 				return false;
 			}
-			// devuelve true si no ha habido ningun problema
+			// Devuelve true si no ha habido ningún problema
 			System.exit(0);
 			return true;
 		}
 		// En caso de no haber establecido una conexion previamente lo notifica y
 		// devuelve false
-		System.out.println("No hay ninguna conexión abierta:");
+		System.out.println("No hay ningúna conexión abierta:");
 		System.exit(0);
 		return false;
 	}
 
 	/*
-	 * Metodo que crea la tabla empleado retuen true si se ha creado con exito
-	 * retuen false si no se ha podido
+	 * Método que crea la tabla empleado 
+	 * return true si se ha creado con éxito
+	 * return false si no ha podido
 	 */
 	public boolean createTableEmpleado() {
 		Statement st =null;
@@ -96,15 +96,16 @@ public class AsociacionCervecera {
 				+ "direccion VARCHAR(100)," + "telefono VARCHAR(15)," + "salario DOUBLE," + "ID_bar INTEGER not NULL,"
 				+ "PRIMARY KEY (ID_empleado)," + "FOREIGN KEY(ID_bar) REFERENCES bar(ID_bar));";
 		try {
-			// Intenta conectarse a la base de datos si
+			// Intenta conectarse a la base de datos por si no está conectada
 			DBconnect();
-			st = conn.createStatement(); // Se crea el statement
-			st.executeUpdate(sql); // Se ejecuta la sentencia Sql
+			st = conn.createStatement(); 						// Se crea el statement
+			st.executeUpdate(sql); 								// Se ejecuta la sentencia Sql
+		// En caso de dar algún problema se notifica y devuelve false
 		} catch (SQLException e) {
-			// En caso de dar algun problema se notifica y devuelve false
 			e.printStackTrace();
 			System.err.println("No se ha podido crear la tabla empleado");
 			return false;
+		// Se cierra el Statement
 		} finally {
 			try {
 				if (st != null)
@@ -113,13 +114,14 @@ public class AsociacionCervecera {
 				e.printStackTrace();
 			}
 		}
-		// Si no ha habido ningun problema devuelve true
+		// Si no ha habido ningún problema devuelve true
 		return true;
 	}
 
 	/*
-	 * Metodo que crea la tabla gusta retuen true si se ha creado con exito retuen
-	 * false si no se ha podido
+	 * Método que crea la tabla gusta 
+	 * return true si se ha creado con éxito 
+	 * return false si no ha podido
 	 */
 	public boolean createTableGusta() {
 		Statement st =null;
@@ -130,14 +132,16 @@ public class AsociacionCervecera {
 				+ "FOREIGN KEY(ID_cerveza) REFERENCES cerveza(ID_cerveza),"
 				+ "FOREIGN KEY(ID_bar) REFERENCES bar(ID_bar));";
 		try {
+			// Intenta conectarse a la base de datos por si no está conectada
 			DBconnect();
-			st = conn.createStatement(); // Se crea el statement
-			st.executeUpdate(sql); // Se ejecuta la sentencia Sql
+			st = conn.createStatement(); 						// Se crea el statement
+			st.executeUpdate(sql); 								// Se ejecuta la sentencia Sql
+		// En caso de dar algún problema se notifica y devuelve false
 		} catch (SQLException e) {
-			// En caso de dar algun problema se notifica y devuelve false
 			e.printStackTrace();
 			System.err.println("No se ha podido crear la tabla gusta");
 			return false;
+		// Se cierra el Statement
 		} finally {
 			try {
 				if (st != null)
@@ -146,17 +150,20 @@ public class AsociacionCervecera {
 				e.printStackTrace();
 			}
 		}
-		// Si no ha habido ningun problema devuelve true
+		// Si no ha habido ningún problema devuelve true
 		return true;
 	}
 
 	/*
-	 * Metodo para cargar los datos en la tabla empleado retuen true si se ha
-	 * realizado con exito retuen false si ha habido algun problema
+	 * Método para cargar los datos en la tabla empleado 
+	 * return true si se ha realizado con éxito 
+	 * return false si ha habido algún problema
 	 */
 	public boolean loadEmpleados() {
 		PreparedStatement pst = null;
+		// Sentencia SQL usada para insertar los datos
 		String query = "INSERT INTO empleado(ID_empleado,nombre,direccion,telefono,salario,ID_bar) VALUES (?,?,?,?,?,?)";
+		// Listas con los datos para insertar en la tabla empleados
 		int id[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 		String nombre[] = { "Carmen Matin", "Ana Ruiz", "Mario Moreno", "Laura Romero", "Luis Ruiz", "Benito Gil",
 				"Dolores Molina", "Julio Garrido", "Pilar Romero" };
@@ -167,6 +174,8 @@ public class AsociacionCervecera {
 		float salario[] = { 1600, 1300, 1200, 1450, 1350, 1500, 1350, 1350, 1650 };
 		int ID_bar[] = { 1, 2, 2, 3, 3, 3, 4, 4, 5 };
 		try {
+			// Intenta conectarse a la base de datos por si no está conectada
+			// Inserta los datos en la tabla
 			DBconnect();
 			pst = conn.prepareStatement(query);
 			for (int i = 0; i < id.length; i++) {
@@ -178,9 +187,11 @@ public class AsociacionCervecera {
 				pst.setInt(6, ID_bar[i]);
 				pst.executeUpdate();
 			}
+		// En caso de dar algún problema se notifica y devuelve false
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
+		// Se cierra el prepareStatement
 		} finally {
 			try {
 				if (pst != null)
@@ -189,14 +200,24 @@ public class AsociacionCervecera {
 				e.printStackTrace();
 			}
 		}
+		// Si no ha habido ningún problema devuelve true 
 		return true;
 	}
 
+	/*
+	 * Método para cargar los datos en la tabla gusta 
+	 * return true si se ha realizado con éxito 
+	 * return false si ha habido algún problema
+	 */
 	public boolean loadGustos(String fileName) {
 		PreparedStatement pst = null;
+		// Se cargan los datos de gusta en el arrayList
 		ArrayList<Gusto> gusto = readData(fileName);
+		// Sentencia SQL usada para insertar los datos
 		String query = "INSERT INTO gusta(ID_socio, ID_cerveza, ID_bar) VALUES(?,?,?)";
 		try {
+			// Intenta conectarse a la base de datos por si no está conectada
+			// Inserta los datos en la tabla
 			DBconnect();
 			pst = conn.prepareStatement(query);
 			for (int i = 0; i < gusto.size(); i++) {
@@ -205,10 +226,12 @@ public class AsociacionCervecera {
 				pst.setInt(3, gusto.get(i).idBar);
 				pst.executeUpdate();
 			}
+		// En caso de dar algún problema se notifica y devuelve false
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("Ha habido un problema con la inserccion de gusta");
 			return false;
+		// Se cierra el prepareStatement
 		} finally {
 			try {
 				if (pst != null)
@@ -217,27 +240,40 @@ public class AsociacionCervecera {
 				e.printStackTrace();
 			}
 		}
+		// Si no ha habido ningún problema devuelve true
 		return true;
 	}
 
+	/*
+	 * Método que carga los datos de la tabla "bar" en un ArrayList 
+	 * return el ArrayList de objetos bar
+	 * En caso saltar una excepción devuelve null
+	 */
 	public ArrayList<Bar> getBarData() {
 		Statement st = null;
 		ResultSet rs = null;
+		// Creamos el ArrayList
 		ArrayList<Bar> respuesta = new ArrayList<Bar>();
+		// Sentencia SQL usada para descargarse los datos de la tabla bar
 		String query = "SELECT * FROM bar";
 		try {
+			// Intenta conectarse a la base de datos por si no está conectada
+			// Se descarga los datos en el objeto rs (ResultSet)
 			DBconnect();
 			st = conn.createStatement();
 			rs = st.executeQuery(query);
+			// Va insertando los datos en el ArrayList
 			while (rs.next()) {
 				int id = rs.getInt("ID_bar");
 				String nombre = rs.getString("nombre");
 				String direccion = rs.getString("direccion");
 				respuesta.add(new Bar(id, nombre, direccion));
 			}
+		// En caso de dar algún problema se notifica y devuelve null
 		} catch (SQLException e) {
 			e.printStackTrace();
 			respuesta = null;
+		// Se cierra el Statement y el ResultSet
 		} finally {
 			try {
 				if (st != null)
@@ -248,22 +284,30 @@ public class AsociacionCervecera {
 				e.printStackTrace();
 			}
 		}
+		// Devuelve el ArrayList con los datos
 		return respuesta;
 	}
-
+	
+	/*
+	 * Método que devuelve un ArrayList con las cervezas del fabricante seleccionado
+	 * return el ArrayList de cervezas
+	 * En caso saltar una excepción devuelve null
+	 */
 	public ArrayList<Cerveza> getCervezasFabricante() {
+		// Se crea los Statement, ResultSet y el Scanner
 		Statement st =null;
 		Statement st2 = null;
 		ResultSet rs = null;
 		ResultSet rs2 = null;
-//		Scanner teclado = null;
 		Scanner sc = null;
-		String query = "SELECT ID_fabricante, nombre FROM fabricante";
+		// Sentencia SQL usada para descargarse los id y los nombres de los fabricantes
+		String query = "SELECT ID_fabricante, nombre FROM fabricante";		
 		ArrayList<Cerveza> cervezas = new ArrayList<Cerveza>();
 		Map<String, Integer> fabricante = new HashMap<String, Integer>();
 		try {
+			// Intenta conectarse a la base de datos por si no está conectada
+			// Ejecuta la query y almacena en el map fabricante el id y el nombre de los fabricantes
 			DBconnect();
-//			teclado = new Scanner(System.in);
 			sc = new Scanner(System.in);
 			st = conn.createStatement();
 			rs = st.executeQuery(query);
@@ -272,10 +316,11 @@ public class AsociacionCervecera {
 				String nombre = rs.getString("nombre");
 				fabricante.put(nombre, id);
 			}
+			// Se imprime el map con los fabricantes y se escoge uno
 			System.out.println("Escoja una opción");
 			System.out.println(fabricante.keySet());
-//			String input = sc.nextLine();
 			String entrada = sc.nextLine();
+			// Se ejecuta la segunda query y se almacena el resultado en el ArrayList cervezas
 			String query2 = "SELECT * FROM cerveza WHERE ID_fabricante =" + fabricante.get(entrada) + ";";
 			st2 = conn.createStatement();
 			rs2 = st2.executeQuery(query2);
@@ -286,30 +331,37 @@ public class AsociacionCervecera {
 				int idFabricante = rs2.getInt("ID_fabricante");
 				cervezas.add(new Cerveza(idCerveza, nombre2, caracteristicas, idFabricante));
 			}
-
+		// En caso de dar algún problema se notifica y devuelve null
 		} catch (SQLException e) {
 			e.printStackTrace();
 			cervezas = null;
+		// Se cierran los Statement,  ResultSet y el Scanner
 		} finally {
 			try {
 				if (st != null)
 					st.close();
 				if (st2 != null)
 					st2.close();
-//				if (teclado != null)
-//					teclado.close();
 				if (rs != null)
 					rs.close();
 				if (rs2 != null)
 					rs2.close();
+				sc.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
+		// Devuelve el ArrayList con los datos 
 		return cervezas;
 	}
 
+	/*
+	 * Método que devuelve las cervezas más populares
+	 * return el ArrayList de cervezas
+	 * En caso saltar una excepción devuelve null
+	 */
 	public ArrayList<Cerveza> getCervezasPopulares() {
+		// Se crea los Statement y ResultSet
 		Statement st = null;
 		Statement st2 = null;
 		Statement st3 = null;
@@ -318,20 +370,25 @@ public class AsociacionCervecera {
 		ResultSet rs3 = null;
 		ArrayList<Cerveza> populares = new ArrayList<>();
 		int porcentaje;
+		// Sentencia SQL que cuenta las cervezas totales
 		String query = "SELECT COUNT(ID_cerveza) AS suma FROM cerveza;";
 		try {
+			// Intenta conectarse a la base de datos por si no está conectada
+			// 
 			DBconnect();
 			st = conn.createStatement();
 			rs = st.executeQuery(query);
 			rs.next();
 			porcentaje = (int) (rs.getInt("suma") * 0.1);
 			st2 = conn.createStatement();
+			// 
 			String query2 = "select ID_cerveza, count(distinct ID_socio) as conteo\r\n"
 					+ "from AsociacionCervecera.gusta\r\n" + "group by ID_cerveza\r\n"
 					+ "having count(distinct ID_bar) > 0 ORDER BY conteo DESC LIMIT " + porcentaje + ";";
 			rs2 = st2.executeQuery(query2);
 			rs2.next();
 			st3 = conn.createStatement();
+			// 
 			String query3 = "SELECT * FROM cerveza WHERE ID_cerveza = " + rs2.getInt("ID_cerveza") + ";";
 			rs3 = st3.executeQuery(query3);
 			while (rs3.next()) {
@@ -341,10 +398,11 @@ public class AsociacionCervecera {
 				int idFabricante = rs3.getInt("ID_fabricante");
 				populares.add(new Cerveza(idCerveza, nombre, caracteristicas, idFabricante));
 			}
-
+		// En caso de dar algún problema se notifica y devuelve null
 		} catch (SQLException e) {
 			e.printStackTrace();
 			populares = null;
+		// Se cierran los Statement y ResultSet 
 		} finally {
 			try {
 				if (st != null)
@@ -363,40 +421,55 @@ public class AsociacionCervecera {
 				e.printStackTrace();
 			}
 		}
+		// Devuelve el ArrayList con los datos 
 		return populares;
 	}
 
+	/*
+	 * Método que modifica la tabla  empleado para añadir una nueva columna llamada “foto”
+	 * return true si se ha realizado con éxito 
+	 * return false si ha habido algún problema
+	 */
 	public boolean addFotoColumn() {
 		PreparedStatement pst = null;
+		// Sentencia SQL usada para modificar la tabla
 		String query = "ALTER TABLE empleado ADD COLUMN foto LONGBLOB";
 		try {
+			// Intenta conectarse a la base de datos por si no está conectada
+			// Ejecuta la query 
 			DBconnect();
-			pst = conn.prepareStatement(query); // STATEMENT
-																	// OR
-																	// PREPAREDSTATEMENT
+			pst = conn.prepareStatement(query); 				
 			pst.executeUpdate();
+		// En caso de dar algún problema se notifica y devuelve false
 		} catch (SQLException e) {
 			System.err.println("Ha habido un problema con la inserccion de la columna");
 			e.printStackTrace();
 			return false;
+		// Se cierra el PreparedStatement
 		} finally {
 			try {
 				if (pst != null)
 					pst.close();
 			} catch (SQLException e2) {
 				e2.printStackTrace();
-			}
-				
+			}				
 		}
+		// Si no ha habido ningún problema devuelve true
 		return true;
 	}
 
+	/*
+	 * Método que inserta un nuevo empleado con foto
+	 * return true si se ha realizado con éxito 
+	 * return false si ha habido algún problema
+	 */
 	public boolean addEmpleadoFoto() {
 		PreparedStatement pst = null;
+		// Sentencia SQL usada para insertar los datros
 		String query = "INSERT INTO empleado(ID_empleado,nombre,direccion,telefono,salario,ID_bar, foto)"
 				+ " VALUES (?,?,?,?,?,?,?)"; // sentencia SQL que se
-		// ejecutará
 		try {
+			// Intenta conectarse a la base de datos por si no está conectada
 			DBconnect();
 			pst = conn.prepareStatement(query);
 			File file = new File("HomerSimpson.jpg");
@@ -412,14 +485,17 @@ public class AsociacionCervecera {
 			pst.setInt(6, 1);
 			pst.setBinaryStream(7, fis, (int) file.length());
 			pst.executeUpdate();
+		// En caso de dar algún problema con SQL se notifica y devuelve false
 		} catch (SQLException e) {
 			System.out.println("Ha habido un problema con la inserccion de los datos");
 			e.printStackTrace();
 			return false;
+		// En caso de dar algún problema con el archivo se notifica y devuelve false
 		} catch (FileNotFoundException e2) {
 			System.out.println("El archivo indicado no existe o no se encuentra en esta dirección");
 			e2.printStackTrace();
 			return false;
+		// Se cierra el PreparedStatement
 		} finally {
 			try {
 				if (pst != null)
@@ -428,6 +504,7 @@ public class AsociacionCervecera {
 				e3.printStackTrace();
 			}
 		}
+		// Si no ha habido ningún problema devuelve true
 		return true;
 	}
 
