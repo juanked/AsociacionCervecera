@@ -323,12 +323,13 @@ public class AsociacionCervecera {
 			System.out.println("Escoja una opción");
 			System.out.println(fabricante.keySet());
 			String entrada = sc.nextLine();
-			while(!fabricante.containsKey(entrada)){
-		        System.out.println("Fabricante no encontrado, vuelva a intentarlo");
-		        System.out.println(fabricante.keySet());
-		        entrada = sc.nextLine();
-		      }
 			//Se ejecuta la segunda query y se almacena el resultado en el ArrayList cervezas
+			while(!fabricante.containsKey(entrada)){
+				System.out.println("Fabricante no encontrado, vuelva a intentarlo");
+				System.out.println(fabricante.keySet());
+				entrada = sc.nextLine();
+			}
+			// Se ejecuta la segunda query y se almacena el resultado en el ArrayList cervezas
 			String query2 = "SELECT * FROM cerveza WHERE ID_fabricante =" + fabricante.get(entrada) + ";";
 			st2 = conn.createStatement();
 			rs2 = st2.executeQuery(query2);
@@ -363,7 +364,8 @@ public class AsociacionCervecera {
 		// Devuelve el ArrayList con los datos 
 		return cervezas;
 	}
-
+	
+	
 	/*
 	 * Método que devuelve las cervezas más populares
 	 * return el ArrayList de cervezas
