@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileInputStream;
@@ -316,11 +317,18 @@ public class AsociacionCervecera {
 				String nombre = rs.getString("nombre");
 				fabricante.put(nombre, id);
 			}
+			if (fabricante.isEmpty()) // Si no hay ningún fabricante devuelve el ArrayList vacío
+				return cervezas;
 			// Se imprime el map con los fabricantes y se escoge uno
 			System.out.println("Escoja una opción");
 			System.out.println(fabricante.keySet());
 			String entrada = sc.nextLine();
-			// Se ejecuta la segunda query y se almacena el resultado en el ArrayList cervezas
+			while(!fabricante.containsKey(entrada)){
+		        System.out.println("Fabricante no encontrado, vuelva a intentarlo");
+		        System.out.println(fabricante.keySet());
+		        entrada = sc.nextLine();
+		      }
+			//Se ejecuta la segunda query y se almacena el resultado en el ArrayList cervezas
 			String query2 = "SELECT * FROM cerveza WHERE ID_fabricante =" + fabricante.get(entrada) + ";";
 			st2 = conn.createStatement();
 			rs2 = st2.executeQuery(query2);
@@ -332,6 +340,8 @@ public class AsociacionCervecera {
 				cervezas.add(new Cerveza(idCerveza, nombre2, caracteristicas, idFabricante));
 			}
 		// En caso de dar algún problema se notifica y devuelve null
+		} catch (NoSuchElementException e2) {
+			getCervezasFabricante();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			cervezas = null;
@@ -346,7 +356,6 @@ public class AsociacionCervecera {
 					rs.close();
 				if (rs2 != null)
 					rs2.close();
-				sc.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -374,21 +383,22 @@ public class AsociacionCervecera {
 		String query = "SELECT COUNT(ID_cerveza) AS suma FROM cerveza;";
 		try {
 			// Intenta conectarse a la base de datos por si no está conectada
-			// 
+			// Calcula el 10% truncando del número total de cervezas
 			DBconnect();
 			st = conn.createStatement();
 			rs = st.executeQuery(query);
 			rs.next();
 			porcentaje = (int) (rs.getInt("suma") * 0.1);
 			st2 = conn.createStatement();
-			// 
-			String query2 = "select ID_cerveza, count(distinct ID_socio) as conteo\r\n"
-					+ "from AsociacionCervecera.gusta\r\n" + "group by ID_cerveza\r\n"
-					+ "having count(distinct ID_bar) > 0 ORDER BY conteo DESC LIMIT " + porcentaje + ";";
+			// Cuenta el número de cervezas que les ha gustado a cada socio contando una 
+			// sola vez para cada socio (no importa en cuantos bares distintos, solo una vez)
+			String query2 = "SELECT ID_cerveza, COUNT(DISTINCT ID_socio) AS conteo "
+					+ "FROM gusta GROUP BY ID_cerveza "
+					+ "ORDER BY conteo DESC LIMIT " + porcentaje + ";";
 			rs2 = st2.executeQuery(query2);
 			rs2.next();
 			st3 = conn.createStatement();
-			// 
+			// Busca los resultados en la base de datos cerveza para posteriormente imprimirlos
 			String query3 = "SELECT * FROM cerveza WHERE ID_cerveza = " + rs2.getInt("ID_cerveza") + ";";
 			rs3 = st3.executeQuery(query3);
 			while (rs3.next()) {
