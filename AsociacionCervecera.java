@@ -230,7 +230,7 @@ public class AsociacionCervecera {
 		// En caso de dar algún problema se notifica y devuelve false
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Ha habido un problema con la inserccion de gusta");
+			System.err.println("Ha habido un problema con la inserccion de gusta");
 			return false;
 		// Se cierra el prepareStatement
 		} finally {
@@ -272,6 +272,7 @@ public class AsociacionCervecera {
 			}
 		// En caso de dar algún problema se notifica y devuelve null
 		} catch (SQLException e) {
+			System.err.println("Ha habido un problema al obtener los datos de los bares");
 			e.printStackTrace();
 			respuesta = null;
 		// Se cierra el Statement y el ResultSet
@@ -341,9 +342,8 @@ public class AsociacionCervecera {
 				cervezas.add(new Cerveza(idCerveza, nombre2, caracteristicas, idFabricante));
 			}
 		// En caso de dar algún problema se notifica y devuelve null
-		} catch (NoSuchElementException e2) {
-			getCervezasFabricante();
 		} catch (SQLException e) {
+			System.err.println("Ha habido un problema");
 			e.printStackTrace();
 			cervezas = null;
 		// Se cierran los Statement,  ResultSet y el Scanner
@@ -412,6 +412,7 @@ public class AsociacionCervecera {
 			}
 		// En caso de dar algún problema se notifica y devuelve null
 		} catch (SQLException e) {
+			System.err.println("Ha habido un problema");
 			e.printStackTrace();
 			populares = null;
 		// Se cierran los Statement y ResultSet 
@@ -499,12 +500,12 @@ public class AsociacionCervecera {
 			pst.executeUpdate();
 		// En caso de dar algún problema con SQL se notifica y devuelve false
 		} catch (SQLException e) {
-			System.out.println("Ha habido un problema con la inserccion de los datos");
+			System.err.println("Ha habido un problema con la inserccion de los datos");
 			e.printStackTrace();
 			return false;
 		// En caso de dar algún problema con el archivo se notifica y devuelve false
 		} catch (FileNotFoundException e2) {
-			System.out.println("El archivo indicado no existe o no se encuentra en esta dirección");
+			System.err.println("El archivo indicado no existe o no se encuentra en esta dirección");
 			e2.printStackTrace();
 			return false;
 		// Se cierra el PreparedStatement
